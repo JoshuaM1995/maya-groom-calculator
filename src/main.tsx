@@ -3,15 +3,18 @@ import ReactDOM from "react-dom/client";
 import { App } from "./App";
 
 import "./demos/ipc";
-import { Provider } from "./components/ui/provider";
+import { Provider as ChakraProvider } from "./components/ui/provider";
+import { ColorModeProvider } from "./components/ui/color-mode";
 // If you want use Node.js, the`nodeIntegration` needs to be enabled in the Main process.
 // import './demos/node'
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <Provider>
-      <App />
-    </Provider>
+    <ChakraProvider>
+      <ColorModeProvider>
+        <App />
+      </ColorModeProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
 
