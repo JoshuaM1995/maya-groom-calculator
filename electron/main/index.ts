@@ -1,8 +1,8 @@
-import { app, BrowserWindow, shell, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, nativeTheme, shell } from "electron";
 import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
 import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { update } from "./update";
 
 const require = createRequire(import.meta.url);
@@ -51,6 +51,8 @@ async function createWindow() {
     height: 800,
     webPreferences: {
       preload,
+      contextIsolation: true,
+      nodeIntegration: false,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // nodeIntegration: true,
 
@@ -78,6 +80,14 @@ async function createWindow() {
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
+  });
+
+  nativeTheme.on("updated", () => {
+    console.log("theme updated");
+    console.log(
+      `Current theme: ${nativeTheme.shouldUseDarkColors ? "dark" : "light"}`
+    );
+    win?.webContents.send("theme-changed", nativeTheme.shouldUseDarkColors);
   });
 
   // Auto update
@@ -123,4 +133,19 @@ ipcMain.handle("open-win", (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
+});
+
+ipcMain.handle("dark-mode:toggle", () => {
+  if (nativeTheme.shouldUseDarkColors) {
+    nativeTheme.themeSource = "dark";
+  } else {
+    nativeTheme.themeSource = "light";
+  }
+
+  return nativeTheme.shouldUseDarkColors;
+});
+
+ipcMain.handle("dark-mode:system", () => {
+  console.log("handle system change");
+  nativeTheme.themeSource = "system";
 });
