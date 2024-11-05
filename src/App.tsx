@@ -4,15 +4,13 @@ import {
   Flex,
   Heading,
   HStack,
-  Text,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NumberInput } from "./components/numberinput";
 import { Select } from "./components/select";
-import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
-import { Card } from "./components/card";
 import { Stat } from "./components/stat";
+import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
 
 const groomScaleOptions = createListCollection({
   items: [
@@ -29,6 +27,10 @@ const areaDensityOptions = createListCollection({
 
 export const App = () => {
   const { setColorMode } = useColorMode();
+  const [groomScale, setGroomScale] = useState<string[]>([]);
+  const [areaDensity, setAreaDensity] = useState<string[]>([]);
+  const [descriptionDensity, setDescriptionDensity] = useState(0);
+  const [mapMask, setMapMask] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -54,24 +56,34 @@ export const App = () => {
             label="Groom Scale"
             placeholder="Select groom"
             collection={groomScaleOptions}
+            value={groomScale}
+            onValueChange={({ value }) => setGroomScale(value)}
           />
           <Select<string>
             label="Area Density"
             placeholder="Select area density"
             collection={areaDensityOptions}
+            value={areaDensity}
+            onValueChange={({ value }) => setAreaDensity(value)}
           />
         </HStack>
 
         <HStack spaceX={2}>
-          <NumberInput label="Description Density" value={0} width="50%" />
+          <NumberInput
+            label="Description Density"
+            width="50%"
+            value={Number(descriptionDensity)}
+            onValueChange={({ value }) => setDescriptionDensity(Number(value))}
+          />
           <NumberInput
             label="Map Mask"
-            value={0}
             min={0}
             max={1}
             step={0.01}
             inputMode="decimal"
             width="50%"
+            value={Number(mapMask)}
+            onValueChange={({ value }) => setMapMask(Number(value))}
           />
         </HStack>
       </VStack>
