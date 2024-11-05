@@ -7,9 +7,9 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select";
-import { ListCollection } from "@chakra-ui/react";
+import { ListCollection, SelectRootProps } from "@chakra-ui/react";
 
-interface SelectProps<Value> {
+interface SelectProps<Value> extends SelectRootProps {
   label: string;
   placeholder?: string;
   collection: ListCollection<{ value: Value; label: string }>;
@@ -19,10 +19,13 @@ export const Select = <Value extends string | number = string | number>({
   label,
   placeholder,
   collection,
+  ...props
 }: SelectProps<Value>) => {
   return (
-    <SelectRoot collection={collection}>
-      <SelectLabel marginBottom={1}>{label}</SelectLabel>
+    <SelectRoot collection={collection} {...props}>
+      <SelectLabel marginBottom={1} fontSize="sm" fontWeight="medium">
+        {label}
+      </SelectLabel>
       <SelectTrigger>
         <SelectValueText placeholder={placeholder} />
       </SelectTrigger>

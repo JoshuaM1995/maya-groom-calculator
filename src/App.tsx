@@ -4,16 +4,12 @@ import {
   Flex,
   Heading,
   HStack,
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
+import { NumberInput } from "./components/numberinput";
 import { Select } from "./components/select";
+import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
 
 const groomScaleOptions = createListCollection({
   items: [
@@ -49,18 +45,33 @@ export const App = () => {
         <ColorModeButton />
       </Flex>
 
-      <HStack marginTop={6}>
-        <Select<string>
-          label="Groom Scale"
-          placeholder="Select groom"
-          collection={groomScaleOptions}
-        />
-        <Select<string>
-          label="Area Density"
-          placeholder="Select area density"
-          collection={areaDensityOptions}
-        />
-      </HStack>
+      <VStack marginTop={6} width="100%" alignItems="flex-start" spaceY={2}>
+        <HStack spaceX={2} width="100%">
+          <Select<string>
+            label="Groom Scale"
+            placeholder="Select groom"
+            collection={groomScaleOptions}
+          />
+          <Select<string>
+            label="Area Density"
+            placeholder="Select area density"
+            collection={areaDensityOptions}
+          />
+        </HStack>
+
+        <HStack spaceX={2}>
+          <NumberInput label="Description Density" value={0} width="50%" />
+          <NumberInput
+            label="Map Mask"
+            value={0}
+            min={0}
+            max={1}
+            step={0.01}
+            inputMode="decimal"
+            width="50%"
+          />
+        </HStack>
+      </VStack>
     </Box>
   );
 };
