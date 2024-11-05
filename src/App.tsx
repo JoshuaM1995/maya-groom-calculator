@@ -4,12 +4,15 @@ import {
   Flex,
   Heading,
   HStack,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { NumberInput } from "./components/numberinput";
 import { Select } from "./components/select";
 import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
+import { Card } from "./components/card";
+import { Stat } from "./components/stat";
 
 const groomScaleOptions = createListCollection({
   items: [
@@ -72,6 +75,11 @@ export const App = () => {
           />
         </HStack>
       </VStack>
+
+      <HStack spaceX={2} width="100%">
+        <Stat marginTop={6} label="Clump 1" value={0} showHelpText={false} />
+        <Stat marginTop={6} label="Clump 2" value={0} showHelpText={false} />
+      </HStack>
     </Box>
   );
 };
