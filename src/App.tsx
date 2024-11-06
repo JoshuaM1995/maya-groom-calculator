@@ -11,26 +11,54 @@ import { NumberInput } from "./components/numberinput";
 import { Select } from "./components/select";
 import { Stat } from "./components/stat";
 import { ColorModeButton, useColorMode } from "./components/ui/color-mode";
+import { GroomScale, AreaDensity } from "./type/types";
+import { calculateClumps } from "./utils";
 
 const groomScaleOptions = createListCollection({
   items: [
-    { label: "Small", value: "small" },
-    { label: "Large", value: "large" },
+    { label: "Small", value: GroomScale.Small },
+    { label: "Large", value: GroomScale.Big },
   ],
 });
 const areaDensityOptions = createListCollection({
   items: [
-    { label: "Low", value: "low" },
-    { label: "High", value: "high" },
+    { label: "Low", value: AreaDensity.Low },
+    { label: "High", value: AreaDensity.High },
   ],
 });
 
+const MIN_DESCRIPTION_DENSITY = 0;
+const MAX_DESCRIPTION_DENSITY = 9999999999;
+const MIN_MASK_VALUE = 0;
+const MAX_MASK_VALUE = 1;
+const MAX_CLUMP_VALUE = 9999999999;
+
 export const App = () => {
   const { setColorMode } = useColorMode();
-  const [groomScale, setGroomScale] = useState<string[]>([]);
-  const [areaDensity, setAreaDensity] = useState<string[]>([]);
+  const [groomScale, setGroomScale] = useState<string[]>([GroomScale.Small]);
+  const [areaDensity, setAreaDensity] = useState<string[]>([AreaDensity.Low]);
   const [descriptionDensity, setDescriptionDensity] = useState(0);
-  const [mapMask, setMapMask] = useState(0);
+  const [clumpOneMask, setClumpOneMask] = useState(1);
+  const [clumpTwoMask, setClumpTwoMask] = useState(0.5);
+
+  const { clumpOne, clumpTwo, clumpOneMasked, clumpTwoMasked } =
+    calculateClumps({
+      descriptionDensity,
+      areaDensity: AreaDensity.High,
+      groomScale: GroomScale.Small,
+      clumpOneMask,
+      clumpTwoMask,
+    });
+
+  const hasErrors =
+    descriptionDensity < MIN_DESCRIPTION_DENSITY ||
+    descriptionDensity > MAX_DESCRIPTION_DENSITY ||
+    clumpOneMask < MIN_MASK_VALUE ||
+    clumpOneMask > MAX_MASK_VALUE ||
+    clumpTwoMask < MIN_MASK_VALUE ||
+    clumpTwoMask > MAX_MASK_VALUE ||
+    clumpOneMasked > MAX_CLUMP_VALUE ||
+    clumpTwoMasked > MAX_CLUMP_VALUE;
 
   useEffect(() => {
     (async () => {
@@ -68,29 +96,52 @@ export const App = () => {
           />
         </HStack>
 
+        <NumberInput
+          label="Description Density"
+          width="100%"
+          value={Number(descriptionDensity)}
+          min={0}
+          max={MAX_DESCRIPTION_DENSITY}
+          onValueChange={({ value }) => setDescriptionDensity(Number(value))}
+        />
+
         <HStack spaceX={2}>
           <NumberInput
-            label="Description Density"
-            width="50%"
-            value={Number(descriptionDensity)}
-            onValueChange={({ value }) => setDescriptionDensity(Number(value))}
-          />
-          <NumberInput
-            label="Map Mask"
+            label="Clump Two Mask"
             min={0}
             max={1}
             step={0.01}
             inputMode="decimal"
             width="50%"
-            value={Number(mapMask)}
-            onValueChange={({ value }) => setMapMask(Number(value))}
+            value={Number(clumpTwoMask)}
+            onValueChange={({ value }) => setClumpTwoMask(Number(value))}
+          />
+          <NumberInput
+            label="Clump One Mask"
+            min={0}
+            max={1}
+            step={0.01}
+            inputMode="decimal"
+            width="50%"
+            value={Number(clumpOneMask)}
+            onValueChange={({ value }) => setClumpOneMask(Number(value))}
           />
         </HStack>
       </VStack>
 
       <HStack spaceX={2} width="100%">
-        <Stat marginTop={6} label="Clump 1" value={0} showHelpText={false} />
-        <Stat marginTop={6} label="Clump 2" value={0} showHelpText={false} />
+        <Stat
+          marginTop={6}
+          label="Clump 2"
+          value={hasErrors ? undefined : clumpTwoMasked}
+          showHelpText={false}
+        />
+        <Stat
+          marginTop={6}
+          label="Clump 1"
+          value={hasErrors ? undefined : clumpOneMasked}
+          showHelpText={false}
+        />
       </HStack>
     </Box>
   );

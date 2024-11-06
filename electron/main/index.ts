@@ -48,7 +48,7 @@ async function createWindow() {
     title: "Main window",
     icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
     width: 500,
-    height: 400,
+    height: 500,
     webPreferences: {
       preload,
       contextIsolation: true,
