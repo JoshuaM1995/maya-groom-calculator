@@ -44,8 +44,8 @@ export const App = () => {
   const { clumpOne, clumpTwo, clumpOneMasked, clumpTwoMasked } =
     calculateClumps({
       descriptionDensity,
-      areaDensity: AreaDensity.High,
-      groomScale: GroomScale.Small,
+      areaDensity: areaDensity[0] as AreaDensity,
+      groomScale: groomScale[0] as GroomScale,
       clumpOneMask,
       clumpTwoMask,
     });
