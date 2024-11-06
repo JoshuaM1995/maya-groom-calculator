@@ -12,7 +12,7 @@ import { PropsWithChildren } from "react";
 
 interface StatProps extends StatRootProps {
   label: string;
-  value: number | undefined;
+  value: number | string;
   formatOptions?: Intl.NumberFormatOptions;
   showHelpText?: boolean;
 }
@@ -28,11 +28,11 @@ export const Stat = ({
   return (
     <StatRoot {...props} as={CardRoot} padding={4}>
       <StatLabel>{label}</StatLabel>
-      {value ? (
+      {typeof value === "number" ? (
         <StatValueText value={value} formatOptions={formatOptions} />
       ) : (
         <Text fontSize="xl" fontWeight="bold">
-          N/A
+          {value}
         </Text>
       )}
       {showHelpText && (

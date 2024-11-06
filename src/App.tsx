@@ -133,13 +133,13 @@ export const App = () => {
         <Stat
           marginTop={6}
           label="Clump 2"
-          value={hasErrors ? undefined : clumpTwoMasked}
+          value={hasErrors ? "N/A" : clumpTwoMasked}
           showHelpText={false}
         />
         <Stat
           marginTop={6}
           label="Clump 1"
-          value={hasErrors ? undefined : clumpOneMasked}
+          value={hasErrors ? "N/A" : clumpOneMasked}
           showHelpText={false}
         />
       </HStack>
